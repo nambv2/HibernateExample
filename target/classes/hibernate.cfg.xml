@@ -7,10 +7,10 @@
         <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.password">abc123</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/friv8online</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/test</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="show_sql">true</property>
-        <mapping class="com.mkyong.common.Games"></mapping>
+        <mapping class="com.vaio.common.Games"></mapping>
     </session-factory>
 </hibernate-configuration>

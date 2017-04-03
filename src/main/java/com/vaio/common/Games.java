@@ -33,17 +33,18 @@ public class Games implements Serializable{
 	int id ;
 	String nameid=""; 
 	String name="" ;
+	@Column(name = "[DESC]", nullable = false)
 	String desc="" ;
 	int time =0; 
-	int width =0;
-	int height=0;
+	int width =700;
+	int height=467;
 	String cat =""; 
-	String type="";
+	String type="SWF";
 	int playcount=0 ;
 	int weeklyplays=0 ;
 	int instructions =0;
 	int keywords=0;
-	boolean active=true ;
+	String active="" ;
 	String source_image="";
 	String source_fileurl="" ;
 	String source_url="";
@@ -129,10 +130,11 @@ public class Games implements Serializable{
 	public void setKeywords(int keywords) {
 		this.keywords = keywords;
 	}
-	public boolean isActive() {
+	
+	public String getActive() {
 		return active;
 	}
-	public void setActive(boolean active) {
+	public void setActive(String active) {
 		this.active = active;
 	}
 	public String getSource_image() {
