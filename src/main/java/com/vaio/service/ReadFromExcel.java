@@ -23,7 +23,7 @@ import com.vaio.common.Content;
  */
 public class ReadFromExcel {
 	public static void main(String args[]) {
-		getContents("C:\\Users\\03042017\\action-page0\\content.xlsx");
+		getContents("C:\\Users\\04042017\\action-page0\\content.xlsx");
 	}
 	public static List<Content> getContents(String path) {
 		List<Content> contents = new ArrayList<Content>();

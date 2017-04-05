@@ -16,8 +16,9 @@ public class App
         System.out.println("Starting import...");
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        
+        String path = args[0];
         List<Content> listGames = new ArrayList<Content>();
+        listGames = ReadFromExcel.getContents(path);
         Games game ;
         for(Content c : listGames) {
         	game = new Games();
@@ -25,6 +26,7 @@ public class App
         	game.setActive("Yes");
         	game.setImgname(c.getImg());
         	game.setSwfname(c.getSwf());
+        	System.out.println("import ==>"+c.getTitle());
         	session.save(game);
         }
         System.out.println("Finish!!!");
