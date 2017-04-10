@@ -14,10 +14,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vaio.common.Content;
+import com.google.gson.JsonObject;
 
 /**
  * @author nambv
@@ -26,7 +23,7 @@ import com.vaio.common.Content;
  */
 public class ReadFromExcel {
 	public static void main(String args[]) {
-		getContents("/Users/nambv/Desktop/content.xlsx");
+		getContents("C:/Users/09042017/action-page0/content1.xlsx");
 	}
 	
 	public static List<String> getField(Row row) {
@@ -39,10 +36,9 @@ public class ReadFromExcel {
 		return attrs;
 	}
 	
-	public static List<JsonNode> getContents(String path) {
-		List<JsonNode> contents = new ArrayList<JsonNode>();
-		ObjectMapper om = new ObjectMapper();
-		JsonNode c;
+	public static List<JsonObject> getContents(String path) {
+		List<JsonObject> contents = new ArrayList<JsonObject>();
+		JsonObject c;
 		List<String> attrs = new ArrayList<String>();
 		try {
 			FileInputStream file = new FileInputStream(new File(path));
@@ -56,13 +52,14 @@ public class ReadFromExcel {
 					continue;
 				}
 				Iterator<Cell> cellIterator = row.iterator();
-				c = om.createObjectNode();
+				c = new JsonObject();
 				while (cellIterator.hasNext()) {
 					Cell cell = cellIterator.next();
 					for(int i = 0; i < attrs.size(); i++) {
-						switch (cell.getCellType()) {
-						case Cell.CELL_TYPE_STRING:
-							if (cell.getColumnIndex() == i) ((ObjectNode) c).put(attrs.get(i), cell.getStringCellValue());
+						if(cell.getCellType() == Cell.CELL_TYPE_STRING) {
+							if (cell.getColumnIndex() == i) c.addProperty(attrs.get(i), cell.getStringCellValue());
+						} else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+							if (cell.getColumnIndex() == i) c.addProperty(attrs.get(i), (int)cell.getNumericCellValue());
 						}
 					}
 				}
