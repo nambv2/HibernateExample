@@ -14,6 +14,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaio.common.Content;
 
 /**
@@ -23,11 +26,24 @@ import com.vaio.common.Content;
  */
 public class ReadFromExcel {
 	public static void main(String args[]) {
-		getContents("C:\\Users\\04042017\\action-page0\\content.xlsx");
+		getContents("/Users/nambv/Desktop/content.xlsx");
 	}
-	public static List<Content> getContents(String path) {
-		List<Content> contents = new ArrayList<Content>();
-		Content content;
+	
+	public static List<String> getField(Row row) {
+		List<String> attrs = new ArrayList<String>();
+		Iterator<Cell> cellIterator = row.iterator();
+		while (cellIterator.hasNext()) {
+			Cell cell = cellIterator.next();
+			attrs.add(cell.getStringCellValue());
+		}
+		return attrs;
+	}
+	
+	public static List<JsonNode> getContents(String path) {
+		List<JsonNode> contents = new ArrayList<JsonNode>();
+		ObjectMapper om = new ObjectMapper();
+		JsonNode c;
+		List<String> attrs = new ArrayList<String>();
 		try {
 			FileInputStream file = new FileInputStream(new File(path));
 			XSSFWorkbook workBook = new XSSFWorkbook(file);
@@ -35,25 +51,22 @@ public class ReadFromExcel {
 			Iterator<Row> rowIterator = sheet.iterator();
 			while (rowIterator.hasNext()) {
 				Row row = rowIterator.next();
-				if(row.getRowNum() == 0) continue;
+				if(row.getRowNum() == 0) {
+					attrs = getField(row);
+					continue;
+				}
 				Iterator<Cell> cellIterator = row.iterator();
-				content = new Content();
+				c = om.createObjectNode();
 				while (cellIterator.hasNext()) {
 					Cell cell = cellIterator.next();
-					switch (cell.getCellType()) {
-					case Cell.CELL_TYPE_NUMERIC:
-						if (cell.getColumnIndex() == 0) {
-							content.setId(String.valueOf(cell.getNumericCellValue()));
+					for(int i = 0; i < attrs.size(); i++) {
+						switch (cell.getCellType()) {
+						case Cell.CELL_TYPE_STRING:
+							if (cell.getColumnIndex() == i) ((ObjectNode) c).put(attrs.get(i), cell.getStringCellValue());
 						}
-					case Cell.CELL_TYPE_STRING:
-						if (cell.getColumnIndex() == 1) content.setTitle(cell.getStringCellValue().trim());
-						if (cell.getColumnIndex() == 2) content.setImg(cell.getStringCellValue());
-						if (cell.getColumnIndex() == 3) content.setSwf(cell.getStringCellValue());
-						if (cell.getColumnIndex() == 4) content.setDes(cell.getStringCellValue());
-						
 					}
 				}
-				contents.add(content);
+				contents.add(c);
 			}
 			file.close();
 		} catch (Exception e) {
@@ -61,4 +74,5 @@ public class ReadFromExcel {
 		}
 		return contents;
 	}
+	
 }
